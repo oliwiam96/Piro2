@@ -60,9 +60,6 @@ th2 = cv2.morphologyEx(th2, cv2.MORPH_OPEN, np.ones((3, 3)), iterations=1)
 
 # Sumowanie wartości w kolumnie
 rowsums = np.sum(th2, axis=1)
-
-rowsums = np.array(list(map(lambda row: np.sum(row), th2)))
-
 v = np.ones(40)
 v[0:11] = 0.5
 v[-11:] = 0.5

@@ -5,7 +5,7 @@ from scipy import stats
 from scipy.signal import savgol_filter, find_peaks
 import matplotlib.pyplot as plt
 
-img = cv2.imread('ocr1/img_19.jpg', 0)
+img = cv2.imread('ocr1/img_21.jpg', 0)
 imgOrigin = img.copy()
 
 
@@ -103,15 +103,15 @@ for r in roi:
         # plt.show()
 
         # starting_words, props = find_peaks(col_sums_conv, threshold=0.4, width = 60.0, prominence=60.0)#, rel_height= 0.5)
-        starting_words, props = find_peaks(col_sums_conv, threshold=0.4, width =30, prominence=20, height = 10)#, rel_height= 0.5)
+        starting_words, props = find_peaks(col_sums_conv, threshold=0.4, width =4, prominence=8, height = 8)#, rel_height= 0.5)
         for word, left, right in zip(starting_words, props["left_ips"], props["right_ips"]):
-            imgOriginMarked[r - 15:r + 45, int(left): int(right)] = 1
+            imgOriginMarked[r - 15:r + 45, int(left)-5: int(right)+25] = 1
 
 
         # cv2.imshow('pre', imgOriginMarked[r - 15:r + 45, :])
         # cv2.waitKey(0)
-            
+
 # cv2.imshow("pre", th2)
-image_to_show = cv2.resize(imgOriginMarked, (imgOriginMarked.shape[1]//3, imgOriginMarked.shape[0]//3))
+image_to_show = cv2.resize(imgOriginMarked, (imgOriginMarked.shape[1]//4, imgOriginMarked.shape[0]//4))
 cv2.imshow("out", image_to_show)
 cv2.waitKey(0)
