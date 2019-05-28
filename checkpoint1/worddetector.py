@@ -98,4 +98,4 @@ def detect_words(path_to_image):
 
     return imgOut
 
-detect_words('../ocr1/img_21.jpg')
+#detect_words('../ocr1/img_21.jpg')
