@@ -5,7 +5,7 @@ from scipy import stats
 from scipy.signal import savgol_filter, find_peaks
 import matplotlib.pyplot as plt
 
-img = cv2.imread('ocr1/img_21.jpg', 0)
+img = cv2.imread('ocr1/img_5.jpg', 0)
 imgOrigin = img.copy()
 
 

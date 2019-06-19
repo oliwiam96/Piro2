@@ -4,8 +4,6 @@ from scipy import stats
 from scipy.signal import savgol_filter, find_peaks
 
 
-
-
 def crop_image(img, tol=0):
     mask = img > tol
     return img[np.ix_(mask.any(1), mask.any(0))]
@@ -82,20 +80,38 @@ def detect_words(path_to_image):
     for r in roi:
         if r - 15 > 0 and r + 45 < imgOrigin.shape[0]:
             th2_row = th2[r - 15:r + 45, :]
-            col_sums = np.sum(th2_row, axis = 0)
+            col_sums = np.sum(th2_row, axis=0)
             col_sums_conv = np.convolve(col_sums, v, mode="valid")
             col_sums_conv = savgol_filter(col_sums_conv, 41, 3)
 
-            starting_words, props = find_peaks(col_sums_conv, threshold=0.4, width =4, prominence=8, height = 8)
+            starting_words, props = find_peaks(col_sums_conv, threshold=0.4, width=4, prominence=8, height=8)
             for word, left, right in zip(starting_words, props["left_ips"], props["right_ips"]):
-                imgOut[r - 15:r + 45, int(left)-5: int(right)+25] = line_number
+                imgOut[r - 15:r + 45, int(left) - 5: int(right) + 25] = line_number
+                #     cv2.imshow('out2',  th[r - 15:r + 45, int(left)-5: int(right)+25])
+            #   cv2.waitKey(0)
 
             line_number += 1
+            column = 0
+            word_start = 0
+            word_end = 0
+            while column < imgOut.shape[1]:
+                if imgOut[r, column] > 0:
+                    word_start = column
+                    column += 1
+                    while imgOut[r, column] > 0:
+                        column += 1
+                    word_end = column
+                column += 1
+            # cv2.imshow('out3', imgOrigin[r - 15:r + 45, startW:endW])
+            cv2.imwrite('samples/index' + str(r) + '.png', imgOrigin[r - 15:r + 45, word_start + 8:word_end + 18])
+            # cv2.waitKey(0)
 
-    # image_to_show = cv2.resize(imgOut/20, (imgOut.shape[1]//4, imgOut.shape[0]//4))
-    # cv2.imshow("out", image_to_show)
-    # cv2.waitKey(0)
+    image_to_show = cv2.resize(imgOut / 20, (imgOut.shape[1] // 4, imgOut.shape[0] // 4))
+
+    cv2.imshow("out5", image_to_show)
+    cv2.waitKey(0)
 
     return imgOut
 
-#detect_words('../ocr1/img_21.jpg')
+
+detect_words('../ocr1/img_1.jpg')
