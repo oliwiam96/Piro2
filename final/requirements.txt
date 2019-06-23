@@ -1,0 +1,2 @@
+pip install scipy --upgrade --user > /dev/null 2>&1
+pip install h5py --upgrade --user  > /dev/null 2>&1
