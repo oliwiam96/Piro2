@@ -1,5 +1,4 @@
-import recognize_index
-import worddetector
+import worddetector, recognize_index
 
 
 def ocr(path_to_image):

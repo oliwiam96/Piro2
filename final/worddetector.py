@@ -27,14 +27,14 @@ def detect_words(path_to_image):
     # BLUR
     img = cv2.GaussianBlur(img, (5, 5), 7)
 
-    # Threshold na podstawie któego znajdowanie są linie
+    # Threshold na podstawie ktorego znajdowanie sa linie
     th = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 2)
 
-    # Pozbycie się niektórych dziur w liniach poziomych/pionowych
+    # Pozbycie sie niektorych dziur w liniach poziomych/pionowych
     thH = cv2.morphologyEx(th, cv2.MORPH_CLOSE, np.ones((3, 5)), iterations=1)
     thV = cv2.morphologyEx(th, cv2.MORPH_CLOSE, np.ones((5, 3)), iterations=1)
 
-    # Threshold od którego odjęte zostaną znalezione linie
+    # Threshold od ktorego odjete zostana znalezione linie
     th2 = cv2.adaptiveThreshold(img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C, cv2.THRESH_BINARY_INV, 11, 7)
 
     # Wykrycie lini poziomych
@@ -49,29 +49,29 @@ def detect_words(path_to_image):
     sob2 = cv2.morphologyEx(sob2, cv2.MORPH_CLOSE, np.ones((7, 3)), iterations=1)
     sob2 = np.roll(sob2, 2, axis=1)
 
-    # Usunięcie lini z obrazka bianrnego
+    # Usuniecie lini z obrazka bianrnego
     th2[sob > 0] = 0
     th2[sob2 > 0] = 0
 
-    # Wypełnienie kształtów i pozbycie się szumu
+    # Wypelnienie ksztaltow i pozbycie sie szumu
     th2 = cv2.morphologyEx(th2, cv2.MORPH_CLOSE, np.ones((7, 7)), iterations=5)
     th2 = cv2.morphologyEx(th2, cv2.MORPH_OPEN, np.ones((3, 3)), iterations=1)
 
-    # Sumowanie wartości w kolumnie
+    # Sumowanie wartosci w kolumnie
     rowsums = np.sum(th2, axis=1)
 
     v = np.ones(40)
     v[0:11] = 0.5
     v[-11:] = 0.5
 
-    # Konwolucja z losowym filtrem żeby lepiej znaleść peaki w rozkładzie sum wierszy
+    # Konwolucja z losowym filtrem zeby lepiej znalezc peaki w rozkladzie sum wierszy
     rowsums_conv = np.convolve(rowsums, v, mode="valid")
     rowsumsT = rowsums_conv.copy()
 
-    # Wygładzenie
+    # Wygladzenie
     rowsums_conv = savgol_filter(rowsums_conv, 41, 3)
 
-    # Znajdowanie peaków
+    # Znajdowanie peakow
     roi, _ = find_peaks(rowsums_conv, threshold=0.4)
     imgOut = np.zeros_like(imgOrigin)
     line_number = 1
